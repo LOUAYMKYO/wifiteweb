@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIFITE — Security Awareness Briefing</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;
+  --border:#30363d;--green:#39d353;--green2:#2ea043;
+  --text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;
+  --red:#f85149;--yellow:#d29922;--purple:#bc8cff;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh}
+
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.75rem 2rem;background:var(--surface);
+  border-bottom:1px solid var(--border);position:fixed;top:0;width:100%;z-index:100;
+}
+.nav-logo{font-size:14px;letter-spacing:4px;color:var(--green);font-weight:600}
+.nav-logo span{color:var(--muted)}
+.nav-controls{display:flex;align-items:center;gap:1rem}
+.slide-counter{font-size:12px;color:var(--muted);font-family:monospace}
+.nav-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);padding:6px 14px;font-size:12px;cursor:pointer;
+  border-radius:6px;transition:all .2s;
+}
+.nav-btn:hover{background:var(--border);border-color:var(--accent)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+
+.slides-wrap{
+  height:100vh;padding-top:52px;
+  display:flex;align-items:center;justify-content:center;
+}
+.slide{display:none;width:min(900px,95vw);animation:fadeIn .3s ease;}
+.slide.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;min-height:500px;
+  box-shadow:0 8px 32px #0008;
+}
+
+.hero-card{
+  background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d2137 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:4rem 3rem;text-align:center;position:relative;overflow:hidden;min-height:500px;
+}
+.hero-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,#39d35318 0%,transparent 70%);
+}
+.hero-eyebrow{font-size:11px;letter-spacing:5px;color:var(--green);text-transform:uppercase;margin-bottom:1.5rem;opacity:.8}
+.hero-title{font-size:72px;font-weight:700;letter-spacing:12px;color:var(--green);margin-bottom:.5rem;font-family:monospace;text-shadow:0 0 40px #39d35355}
+.hero-subtitle{font-size:12px;letter-spacing:5px;color:var(--muted);text-transform:uppercase;margin-bottom:2rem}
+.hero-desc{font-size:15px;color:var(--text);max-width:520px;line-height:1.7;opacity:.8}
+.hero-tag{margin-top:2.5rem;background:var(--surface2);border:1px solid var(--border);padding:6px 16px;border-radius:20px;font-size:11px;color:var(--muted);letter-spacing:2px;}
+
+.slide-header{
+  padding:1.5rem 2rem 0;border-bottom:1px solid var(--border);
+  display:flex;align-items:baseline;gap:1rem;background:var(--surface2);
+}
+.slide-tag{font-size:10px;letter-spacing:3px;color:var(--green);text-transform:uppercase}
+.slide-title{font-size:28px;font-weight:600;color:var(--text);padding-bottom:1.2rem}
+.slide-body{padding:2rem}
+
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.overview-left{display:flex;flex-direction:column;gap:1rem}
+.desc-block{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.2rem}
+.desc-block p{font-size:13px;color:var(--muted);line-height:1.7}
+.desc-block p+p{margin-top:.8rem}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.tool-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;}
+.tool-name{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:.2rem;font-family:monospace}
+.tool-role{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.tool-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.section-label{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:.8rem}
+
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.step-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.2rem;text-align:center;}
+.step-num{font-size:28px;font-weight:700;color:var(--green);font-family:monospace;margin-bottom:.5rem}
+.step-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:.8rem}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.tech-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.2rem;}
+.tech-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600;letter-spacing:1px;margin-bottom:.7rem;font-family:monospace}
+.badge-wps{background:#bc8cff22;color:var(--purple);border:1px solid #bc8cff44}
+.badge-wpa{background:#58a6ff22;color:var(--accent);border:1px solid #58a6ff44}
+.badge-wpa3{background:#39d35322;color:var(--green);border:1px solid #39d35344}
+.badge-wep{background:#f8514922;color:var(--red);border:1px solid #f8514944}
+.badge-evil{background:#d2992222;color:var(--yellow);border:1px solid #d2992244}
+.tech-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.tech-note{margin-top:1rem;padding:.8rem;background:#d2992211;border:1px solid #d2992233;border-radius:6px;font-size:11px;color:var(--yellow);}
+
+.config-header{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.2rem;margin-bottom:1.2rem;font-family:monospace;font-size:13px;color:var(--green);}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.flag-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;}
+.flag-name{font-family:monospace;font-size:13px;color:var(--accent);margin-bottom:.2rem}
+.flag-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+.cmd-list{display:flex;flex-direction:column;gap:.8rem}
+.cmd-block{background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cmd-label{padding:.5rem 1rem;background:#ffffff08;font-size:11px;color:var(--muted);letter-spacing:1px;border-bottom:1px solid var(--border);}
+.cmd-code{padding:.8rem 1rem;font-family:monospace;font-size:13px;color:var(--green);display:flex;align-items:center;gap:.5rem;}
+.cmd-code .prompt{color:var(--muted)}
+.warning-box{margin-top:1rem;padding:.8rem 1rem;background:#f8514911;border:1px solid #f8514933;border-radius:6px;font-size:12px;color:var(--red);line-height:1.6;}
+
+.risks-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.risk-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.2rem;}
+.risk-title{font-size:13px;font-weight:600;color:var(--red);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.risk-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.risk-note{margin-top:1rem;padding:.8rem;background:#39d35311;border:1px solid #39d35333;border-radius:6px;font-size:11px;color:var(--green);}
+
+.defense-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.defense-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.2rem;text-align:center;}
+.defense-icon{font-size:28px;margin-bottom:.7rem}
+.defense-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:.5rem}
+.defense-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+.thanks-card{
+  background:linear-gradient(135deg,#0d1117,#161b22,#0d2137);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:4rem 3rem;text-align:center;min-height:500px;
+}
+.thanks-title{font-size:48px;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.thanks-sub{font-size:14px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:2rem}
+.thanks-tag{font-size:11px;letter-spacing:3px;color:var(--green);text-transform:uppercase;padding:6px 16px;border:1px solid var(--green);border-radius:20px}
+
+.progress-bar{position:fixed;bottom:0;left:0;height:2px;background:var(--green);transition:width .3s ease;z-index:200;}
+.dots{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:200;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;}
+.dot.active{background:var(--green);transform:scale(1.3)}
+.kbd-hint{position:fixed;bottom:1rem;right:1.5rem;font-size:11px;color:var(--muted);display:flex;gap:.4rem;align-items:center;}
+.kbd{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:monospace;font-size:10px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">WIFITE <span>// SECURITY BRIEFING</span></div>
+  <div class="nav-controls">
+    <span class="slide-counter" id="counter">1 / 9</span>
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>← Prev</button>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+  </div>
+</nav>
+
+<div class="progress-bar" id="progress"></div>
+<div class="dots" id="dots"></div>
+<div class="kbd-hint"><span class="kbd">←</span><span class="kbd">→</span> to navigate</div>
+
+<div class="slides-wrap">
+
+  <!-- SLIDE 1: HERO -->
+  <div class="slide active" id="slide-1">
+    <div class="card hero-card">
+      <p class="hero-eyebrow">Security Awareness Briefing</p>
+      <div class="hero-title">WIFITE</div>
+      <p class="hero-subtitle">Automated Wireless Auditing Tool</p>
+      <p class="hero-desc">Understand, analyze, and strengthen Wi-Fi network security</p>
+      <div class="hero-tag">WIFITE // SECURITY AWARENESS BRIEFING</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: OVERVIEW -->
+  <div class="slide" id="slide-2">
+    <div class="card">
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Overview</div>
+          <div class="slide-title">What is Wifite?</div>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="overview-grid">
+          <div class="overview-left">
+            <div class="section-label">An orchestrator, not a standalone tool</div>
+            <div class="desc-block">
+              <p>Wifite is an automated Python script built for Linux penetration-testing distributions, such as Kali Linux. It acts as a "wrapper" around existing tools to simplify Wi-Fi auditing.</p>
+              <p>It automates the capture and testing of Wi-Fi passwords (WEP, WPA/WPA2, WPS-enabled networks) with minimal manual commands, for security professionals and ethical testers.</p>
+              <p>Wifite handles the wireless adapter, enables monitor mode, and automatically chains the right tools together, taking the manual guesswork out of the test.</p>
+            </div>
+          </div>
+          <div>
+            <div class="section-label">Tools Orchestrated</div>
+            <div class="tools-grid">
+              <div class="tool-card">
+                <div class="tool-name">Aircrack-ng</div>
+                <div class="tool-role">WEP/WPA audit suite</div>
+                <div class="tool-desc">Core wireless audit and cracking suite</div>
+              </div>
+              <div class="tool-card">
+                <div class="tool-name">Pyrit</div>
+                <div class="tool-role">WPA hash computation</div>
+                <div class="tool-desc">GPU-accelerated hash cracking</div>
+              </div>
+              <div class="tool-card">
+                <div class="tool-name">Reaver</div>
+                <div class="tool-role">WPS attacks</div>
+                <div class="tool-desc">Brute-force WPS PIN recovery</div>
+              </div>
+              <div class="tool-card">
+                <div class="tool-name">Tshark</div>
+                <div class="tool-role">Packet analysis</div>
+                <div class="tool-desc">Network packet capture & analysis</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: WORKFLOW -->
+  <div class="slide" id="slide-3">
+    <div class="card">
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Workflow</div>
+          <div class="slide-title">How It Works</div>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">01</div>
+            <div class="step-name">Scanning</div>
+            <div class="step-desc">Scans for visible networks: signal strength, encryption type, connected clients.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">02</div>
+            <div class="step-name">Target Selection</div>
+            <div class="step-desc">The user picks a network from the list, or specifies it via BSSID / ESSID.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">03</div>
+            <div class="step-name">Automated Attacks</div>
+            <div class="step-desc">Launches attacks suited to the detected encryption (e.g. PMKID then handshake for WPA).</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">04</div>
+            <div class="step-name">Cracking</div>
+            <div class="step-desc">Attempts to crack the password via a wordlist, or saves the capture for offline cracking.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: TECHNIQUES -->
+  <div class="slide" id="slide-4">
+    <div class="card">
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Techniques</div>
+          <div class="slide-title">Attack Families</div>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="tech-grid">
+          <div class="tech-card">
+            <span class="tech-badge badge-wps">WPS</span>
+            <div class="tech-desc">Offline Pixie-Dust, online brute-force PIN, and offline NULL PIN attack.</div>
+          </div>
+          <div class="tech-card">
+            <span class="tech-badge badge-wpa">WPA / WPA2</span>
+            <div class="tech-desc">Handshake capture via deauthentication, and clientless PMKID hash capture.</div>
+          </div>
+          <div class="tech-card">
+            <span class="tech-badge badge-wpa3">WPA3</span>
+            <div class="tech-desc">SAE handshake capture; watch for transition-mode downgrade attacks.</div>
+          </div>
+          <div class="tech-card">
+            <span class="tech-badge badge-wep">WEP</span>
+            <div class="tech-desc">Legacy techniques: fragmentation, chop-chop, and aireplay attacks.</div>
+          </div>
+          <div class="tech-card" style="grid-column:span 2">
+            <span class="tech-badge badge-evil">Evil Twin</span>
+            <div class="tech-desc">Rogue access point with a captive portal to capture credentials.</div>
+          </div>
+        </div>
+        <div class="tech-note">⚠ The exact number and behavior of attacks vary with the installed Wifite version.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: CONFIG -->
+  <div class="slide" id="slide-5">
+    <div class="card">
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Configuration</div>
+          <div class="slide-title">Control and Configuration</div>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="config-header">root@kali: ~# wifite --flags</div>
+        <div class="config-grid">
+          <div class="flag-card">
+            <div class="flag-name">--wep / --wpa / --wps-only</div>
+            <div class="flag-desc">Restricts the audit to a single encryption type.</div>
+          </div>
+          <div class="flag-card">
+            <div class="flag-name">--pmkid</div>
+            <div class="flag-desc">Specifically forces the PMKID attack (clientless).</div>
+          </div>
+          <div class="flag-card">
+            <div class="flag-name">--no-deauth</div>
+            <div class="flag-desc">Stealth mode: skips the deauthentication phase.</div>
+          </div>
+          <div class="flag-card">
+            <div class="flag-name">--dict &lt;file&gt;</div>
+            <div class="flag-desc">Supplies a custom wordlist for cracking.</div>
+          </div>
+          <div class="flag-card">
+            <div class="flag-name">--no-crack / --skip-crack</div>
+            <div class="flag-desc">Prevents Wifite from auto-cracking the capture.</div>
+          </div>
+          <div class="flag-card">
+            <div class="flag-name">--dual-interface</div>
+            <div class="flag-desc">Uses two adapters: one to capture, one for deauth / Evil Twin.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: EXAMPLES -->
+  <div class="slide" id="slide-6">
+    <div class="card">
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">In Practice</div>
+          <div class="slide-title">Example Commands</div>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="cmd-list">
+          <div class="cmd-block">
+            <div class="cmd-label">Full automatic scan and attack</div>
+            <div class="cmd-code"><span class="prompt">$</span> sudo wifite</div>
+          </div>
+          <div class="cmd-block">
+            <div class="cmd-label">Target a network by BSSID address</div>
+            <div class="cmd-code"><span class="prompt">$</span> sudo wifite --bssid AA:BB:CC:DD:EE:FF</div>
+          </div>
+          <div class="cmd-block">
+            <div class="cmd-label">Targeted PMKID attack (clientless)</div>
+            <div class="cmd-code"><span class="prompt">$</span> sudo wifite --pmkid</div>
+          </div>
+          <div class="cmd-block">
+            <div class="cmd-label">WPA networks only + custom wordlist</div>
+            <div class="cmd-code"><span class="prompt">$</span> sudo wifite --wpa --dict rockyou.txt</div>
+          </div>
+        </div>
+        <div class="warning-box">⚠ These commands are not authorization to attack a third-party network: use them only on networks you own or are explicitly authorized to test.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: RISKS -->
+  <div class="slide" id="slide-7">
+    <div class="card">
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Analysis</div>
+          <div class="slide-title">Risks and Limitations</div>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="risks-grid">
+          <div class="risk-card">
+            <div class="risk-title">⚡ Weak Passwords</div>
+            <div class="risk-desc">Short or predictable keys fall quickly to a dictionary attack.</div>
+          </div>
+          <div class="risk-card">
+            <div class="risk-title">🔓 Outdated Protocols</div>
+            <div class="risk-desc">Poorly configured WEP and WPA/TKIP remain vulnerable to legacy techniques.</div>
+          </div>
+          <div class="risk-card">
+            <div class="risk-title">👤 Rogue Access Points</div>
+            <div class="risk-desc">An Evil Twin can fool users who aren't checking the network's identity closely.</div>
+          </div>
+          <div class="risk-card">
+            <div class="risk-title">⚙️ Misconfiguration</div>
+            <div class="risk-desc">WPS left enabled by default or outdated firmware widen the attack surface.</div>
+          </div>
+        </div>
+        <div class="risk-note">ℹ Not every attack works on every network: success depends on the encryption in place, the hardware used, and the Wifite version.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: DEFENSE -->
+  <div class="slide" id="slide-8">
+    <div class="card">
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Defense</div>
+          <div class="slide-title">Security Best Practices</div>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="defense-grid">
+          <div class="defense-card">
+            <div class="defense-icon">🔒</div>
+            <div class="defense-title">Use WPA3</div>
+            <div class="defense-desc">Or a properly configured WPA2-AES if WPA3 isn't available.</div>
+          </div>
+          <div class="defense-card">
+            <div class="defense-icon">🚫</div>
+            <div class="defense-title">Disable WPS</div>
+            <div class="defense-desc">Unless specifically needed: it's a frequent attack vector.</div>
+          </div>
+          <div class="defense-card">
+            <div class="defense-icon">🔑</div>
+            <div class="defense-title">Strong Password</div>
+            <div class="defense-desc">Long, unique, and unpredictable for the Wi-Fi network.</div>
+          </div>
+          <div class="defense-card">
+            <div class="defense-icon">🔄</div>
+            <div class="defense-title">Update Hardware</div>
+            <div class="defense-desc">Keep routers and access points current on firmware.</div>
+          </div>
+          <div class="defense-card">
+            <div class="defense-icon">👁️</div>
+            <div class="defense-title">Watch for Unknown APs</div>
+            <div class="defense-desc">Spot suspicious or duplicated access points on your network.</div>
+          </div>
+          <div class="defense-card">
+            <div class="defense-icon">✅</div>
+            <div class="defense-title">Regular Audits</div>
+            <div class="defense-desc">Test your own network on a planned, legal basis.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: THANK YOU -->
+  <div class="slide" id="slide-9">
+    <div class="card thanks-card">
+      <p style="font-size:48px;margin-bottom:1rem">❓</p>
+      <div class="thanks-title">Questions?</div>
+      <p class="thanks-sub">Thank you for your attention</p>
+      <div class="thanks-tag">WIFITE // SECURITY AWARENESS BRIEFING</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let current = 1;
+const total = 9;
+
+function buildDots(){
+  const dots = document.getElementById('dots');
+  for(let i=1;i<=total;i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===1?' active':'');
+    d.onclick = ()=>goTo(i);
+    dots.appendChild(d);
+  }
+}
+
+function goTo(n){
+  document.getElementById('slide-'+current).classList.remove('active');
+  document.querySelectorAll('.dot')[current-1].classList.remove('active');
+  current = Math.max(1, Math.min(total, n));
+  document.getElementById('slide-'+current).classList.add('active');
+  document.querySelectorAll('.dot')[current-1].classList.add('active');
+  document.getElementById('counter').textContent = current + ' / ' + total;
+  document.getElementById('prevBtn').disabled = current===1;
+  document.getElementById('nextBtn').disabled = current===total;
+  document.getElementById('progress').style.width = ((current/total)*100)+'%';
+}
+
+function changeSlide(dir){ goTo(current+dir); }
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') changeSlide(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') changeSlide(-1);
+});
+
+buildDots();
+document.getElementById('progress').style.width = ((1/total)*100)+'%';
+</script>
+</body>
+</html>
